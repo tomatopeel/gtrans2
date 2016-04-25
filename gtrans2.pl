@@ -76,7 +76,7 @@ sub sig_message_public {
 			$wgt->{key} ne 'none') {
 
 		my $win = $chans->{$target}{window};
-		my $translated = translate($msg);
+		my $translated = translate($msg, $target);
 		$win->print("< $nick> $translated");
 	}
 }
@@ -87,8 +87,14 @@ sub set_api_key {
 }
 
 sub translate {
-	my $in = $_[0];
-	my $t = $wgt->translate( { q => $in } );
+	my ($in, $cname) = @_;
+	my $t = $wgt->translate(
+		{
+			q => $in,
+			source => $chans->{$cname}{source},
+			target => $chans->{$cname}{target},
+		} 
+	);
 	my $result = '';
 
 	for my $translation (@{ $t->{data}->{translations} }) {
