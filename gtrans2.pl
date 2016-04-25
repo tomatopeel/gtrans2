@@ -4,6 +4,7 @@ use strict;
 
 use Irssi;
 use WWW::Google::Translate;
+use Data::Dumper;
 
 use vars qw/$VERSION %IRSSI/;
 
@@ -26,8 +27,58 @@ my $wgt = WWW::Google::Translate->new(
 	}
 );
 
+my $chans = {};
+
 sub entry_point {
 
+	my ($arguments, $server, $channel) = @_;
+	my @args = Irssi::command_parse_options('gt2', $arguments);
+	my $opts = $args[0];
+
+	# set api key if given
+	if (exists $opts->{k}) {
+		$wgt->{key} = $opts->{k};
+	}
+
+	# enable for given channel if any
+	my $cname;
+	if ($channel) {
+		$cname = $channel->{name};
+		$chans->{$cname}{enabled} = !$chans->{$cname}{enabled};
+		$chans->{$cname}{window} = Irssi::active_win();
+	}
+
+	# set source lang if given
+	if (exists $opts->{s}) {
+		if ($cname) {
+			$chans->{$cname}{source} = $opts->{s};
+		} else {
+			$wgt->{default_source} = $opts->{s};
+		}
+	}
+
+	# set target lang
+	if (exists $opts->{t}) {
+		if ($channel) {
+			$chans->{$cname}{target} = $opts->{t};
+		} else {
+			$wgt->{default_target} = $opts->{t};
+		}
+	}
+
+}
+
+sub sig_message_public {
+	my ($server, $msg, $nick, $nick_addr, $target) = @_;
+
+	if (	exists $chans->{$target} &&
+			$chans->{$target}{enabled} &&
+			$wgt->{key} ne 'none') {
+
+		my $win = $chans->{$target}{window};
+		my $translated = translate($msg);
+		$win->print('< ' . $nick . '> ' . $translated);
+	}
 }
 
 sub set_api_key {
@@ -38,11 +89,14 @@ sub set_api_key {
 sub translate {
 	my $in = $_[0];
 	my $t = $wgt->translate( { q => $in } );
+	my $result = '';
 
 	for my $translation (@{ $t->{data}->{translations} }) {
-		print $translation->{translatedText};
+		$result = $result . $translation->{translatedText};
 	}
+	return $result;
 }
 
 Irssi::command_bind('gt2', 'entry_point');
-Irssi::command_parse_options('gt2', '-k -c');
+Irssi::command_set_options('gt2', '-k -s -t');
+Irssi::signal_add('message public', 'sig_message_public');
