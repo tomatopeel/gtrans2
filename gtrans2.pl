@@ -77,7 +77,7 @@ sub sig_message_public {
 
 		my $win = $chans->{$target}{window};
 		my $translated = translate($msg, $target);
-		$win->print("< $nick> $translated");
+		$win->print("%Y< $nick> $translated");
 	}
 }
 
