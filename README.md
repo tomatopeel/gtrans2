@@ -1,8 +1,10 @@
-# Description 
+# gtrans2
+
+### Description 
 
 gtrans2.pl is an irssi script written in Perl to leverage the Google Translate v2 API. It requires a legitimate Google Translate v2 API key which implements usage-based pricing. For a free translator irssi script, please see https://github.com/thomasodot/btrans
 
-# Usage
+### Usage
 
 ```
 mv path/to/gtrans2.pl ~/.irssi/scripts/gtrans2.pl
