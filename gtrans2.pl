@@ -8,7 +8,7 @@ use Data::Dumper;
 
 use vars qw/$VERSION %IRSSI/;
 
-$VERSION = "0.10";
+$VERSION = "0.20";
 %IRSSI = (
     authors     => 'Thomas O\'Dot',
     contact     => 'https://github.com/thomasodot',
@@ -77,7 +77,7 @@ sub sig_message_public {
 
 		my $win = $chans->{$target}{window};
 		my $translated = translate($msg);
-		$win->print('< ' . $nick . '> ' . $translated);
+		$win->print("< $nick> $translated");
 	}
 }
 
