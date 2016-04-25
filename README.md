@@ -4,10 +4,13 @@ gtrans2.pl is an irssi script written in Perl to leverage the Google Translate v
 
 # Usage
 
-Place gtrans2.pl in ~/.irssi/scripts/
+```
+mv path/to/gtrans2.pl ~/.irssi/scripts/gtrans2.pl
 
 /run gtrans2
 
 /gt2 -k [API key] -s [source lang] -t [target lang]
+
+```
 
 If executed in status window, will affect the default source/target langs, else will affect the channel source/target lang and switch whether enabled on the given channel.
